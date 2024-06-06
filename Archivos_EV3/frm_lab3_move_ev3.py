@@ -122,6 +122,8 @@ class MoveTankMission1(MoveTank):
         self._uts_motor = None
         self._touch_sensor = None
         self.front_safe_distance = 20.0 #cm
+
+        # Mision 1
         self.hit_point = None
         self.leave_point = None
         self.goal_coordinates = None
@@ -138,8 +140,13 @@ class MoveTankMission1(MoveTank):
         # This value helps prevent the robot from getting stuck and
         # rotating in endless circles.
         # This distance was determined through trial and error.
-        self.leave_point_to_hit_point_diff = 50 # in milimeters
-        self.dist_thresh_wf = 30 #mm
+        self.leave_point_to_hit_point_diff = 60 # in milimeters
+        self.dist_thresh_wf = 3 #cm
+
+        self.closest_point_to_wall_orientation = None
+        self.closest_point_to_wall_distance = None
+
+        self.following_wall = False
     
     # Ultrasonic sensor used for bug2 algorithm
     @property
@@ -433,13 +440,15 @@ class MoveTankMission1(MoveTank):
                 self.x_pos_mm += mm * math.cos(self.theta)
                 self.y_pos_mm += mm * math.sin(self.theta)
 
-                print("Distance: "+str(self._ultrasonic_s.distance_centimeters)+" cm")
-                if self.is_bug2_required and self._ultrasonic_s and self._uts_motor and self._touch_sensor and (self._ultrasonic_s.distance_centimeters < self.front_safe_distance):
-                    #print("Obstacle detected at: "+str(self._ultrasonic_s.distance_centimeters)+" cm")
-                    self.is_obstacle_detected = True
-                    # stop moving
-                    self.off(brake='hold')
-                    
+                #print("Distance: "+str(self._ultrasonic_s.distance_centimeters)+" cm")
+                
+                if not self.following_wall:
+                    print("Distance: "+str(self._ultrasonic_s.distance_centimeters))   
+                    if self._ultrasonic_s and self._uts_motor and self._touch_sensor and (self._ultrasonic_s.distance_centimeters < self.front_safe_distance):
+                        print("Obstacle detected at: "+str(self._ultrasonic_s.distance_centimeters)+" cm")
+                        self.is_obstacle_detected = True
+                        # stop moving
+                        # self.off(brake='hold')
 
                 if sleep_time:
                     time.sleep(sleep_time)
@@ -458,14 +467,32 @@ class MoveTankMission1(MoveTank):
         if self.odometry_thread_run:
             self.odometry_thread_run = False
 
-    def run_mission(self,speed,x_target_mm, y_target_mm):
+    def run_mission(self,speed,x_target_mm, y_target_mm,safe_front_distance=15,distance_to_start_goal_line_precision=5,leave_point_to_hit_point_diff=60,dist_thresh_wf = 15):
+        self.front_safe_distance = safe_front_distance
+        self.distance_to_start_goal_line_precision = distance_to_start_goal_line_precision
+        self.leave_point_to_hit_point_diff = leave_point_to_hit_point_diff
+        self.dist_thresh_wf = dist_thresh_wf
         while not self._touch_sensor.is_pressed:
+            print("POS: X"+str(self.x_pos_mm)+" Y"+str(self.y_pos_mm))
             if self.is_obstacle_detected:
                 self.follow_wall(speed, search_speed=10)
             else:
                 print("Moving to target")
                 self.on_to_coordinates(speed,x_target_mm, y_target_mm)
+        # stop moving
+        self.off(brake='hold')
     
+    def findClosestPointToWall(self, deg_range = [-120,120], delta = 1):
+        distances = []
+        for orientation in range(deg_range[0],deg_range[1],delta):
+            self._uts_motor.on_to_position(speed=20,position=orientation+5)
+            distance = self.ultrasonic_s.distance_centimeters
+            time.sleep(0.1)
+            distances.append(distance)
+        self.closest_point_to_wall_orientation = distances.index(min(distances))*delta + deg_range[0]
+        self.closest_point_to_wall_distance = min(distances)
+        print("Closest point found at: "+str(self.closest_point_to_wall_orientation)+" deg, Distance: "+str(self.closest_point_to_wall_distance))
+
     def follow_wall(self, speed, search_speed):
         """
         This method causes the robot to follow the boundary of a wall.
@@ -474,16 +501,39 @@ class MoveTankMission1(MoveTank):
         if not self.odometry_thread_run:
             raise ThreadNotRunning("odometry_start() must be called to track robot coordinates")
 
+        self.following_wall = True
+        # stop moving
+        self.off(brake='hold')
+
         self.hit_point = {}
         self.hit_point['x'] = self.x_pos_mm
         self.hit_point['y'] = self.y_pos_mm
         self.distance_to_goal_from_hit_point = math.sqrt((self.hit_point['x']-self.goal_coordinates['x']) ** 2 + (self.hit_point['y']-self.goal_coordinates['y']) ** 2)
         self.distance_to_goal_line = 0
-        self._uts_motor.on_to_position(speed=speed,position=-90)
-
-        # Special code if Bug2 algorithm is activated
-        if self.is_bug2_required:
+        
          
+        self.findClosestPointToWall(delta=5)
+
+        print("Angle: "+str(-self.closest_point_to_wall_orientation+math.degrees(self.theta)-90))
+        self.turn_to_angle(search_speed,-self.closest_point_to_wall_orientation+math.degrees(self.theta)-90,use_gyro=True)
+        print("Orientation: "+str(math.degrees(self.theta)))
+        self._uts_motor.on_to_position(speed=speed,position=-85)
+        d = 7 #cm
+        print("Distance to keep: "+str(d))
+        #self.on(speed,speed)
+
+        # Logic for following the wall
+        # >d means no wall detected by that laser beam
+        # <d means an wall was detected by that laser beam
+        
+        #while self._ultrasonic_s.distance_centimeters > d:
+        #    print("Approaching")
+        #    self.wall_following_state = "search for wall"
+        #    self.on_for_seconds(search_speed,-search_speed,0.4) # turn right to find wall
+        
+        diff = 0
+        while diff < self.leave_point_to_hit_point_diff:
+            # Calculate
             # Calculate the point on the start-goal 
             # line that is closest to the current position
             x_start_goal_line = self.x_pos_mm
@@ -517,27 +567,40 @@ class MoveTankMission1(MoveTank):
                 # Is the leave point closer to the goal than the hit point?
                 # If yes, go to goal. 
                 diff = self.distance_to_goal_from_hit_point - self.distance_to_goal_from_leave_point
-                if diff > self.leave_point_to_hit_point_diff:
-                         
-                    # Change the mode. Go to goal.
-                    self.is_obstacle_detected = False
-                    print("On position")
-
-                # Exit this function
-                return
-         
-        # Logic for following the wall
-        # >d means no wall detected by that laser beam
-        # <d means an wall was detected by that laser beam
-        d = self.dist_thresh_wf
-        sensor_distance = self._ultrasonic_s.distance_centimeters
-        if sensor_distance > d:
-            print("Turning right")
-            self.wall_following_state = "search for wall"
-            self.on_for_seconds(search_speed,-search_speed,0.4) # turn right to find wall
-        else:
-            print("Going Straight")
-            self.on_for_seconds(speed,speed,0.4) #go straight
+                print("Difference between goal-hit and goal-leave:"+str(diff))
+            # Drive
+            current_distance = self._ultrasonic_s.distance_centimeters 
+            print("Distance to wall: "+ str(current_distance))
+            turning_ratio = 0.2
+            if current_distance > 40:
+                print("Checking corner")
+                self.off(brake='hold')
+                self.findClosestPointToWall([-90,90],delta=10)
+                if self.closest_point_to_wall_distance > 40:
+                    print("Corner")
+                    self._uts_motor.on_to_position(speed=speed,position=-85)
+                    self.on_arc_left(speed, 10*d+8*5, 2*math.pi*(10*d+8*5)*85/360)
+                    self.on_for_seconds(search_speed,search_speed,2.5)
+                else:
+                    print("Angle: "+str(-self.closest_point_to_wall_orientation+math.degrees(self.theta)-90))
+                    self.turn_to_angle(search_speed,-self.closest_point_to_wall_orientation+math.degrees(self.theta)-90,use_gyro=True)
+                    print("Orientation: "+str(math.degrees(self.theta)))
+                    self._uts_motor.on_to_position(speed=speed,position=-85)
+            elif current_distance > d and abs(current_distance-d) > self.dist_thresh_wf:
+                print("Turning left")
+                self.on_for_seconds(search_speed-search_speed*turning_ratio,search_speed,0.3) # turn left to find wall
+            elif current_distance < d and abs(current_distance-d) > self.dist_thresh_wf:
+                print("Turning right")
+                self.on_for_seconds(search_speed,search_speed-search_speed*turning_ratio,0.3) # turn right to find wall
+            else:
+                print("Going Staight")
+                self.on(speed,speed)
+        
+        self._uts_motor.on_to_position(speed=speed,position=5)
+        # Change the mode. Go to goal.
+        self.is_obstacle_detected = False
+        print("On position")
+        self.following_wall = False
 
     def on_to_coordinates(self, speed, x_target_mm, y_target_mm, brake=True, block=True, bug2=True):
         """
@@ -546,10 +609,7 @@ class MoveTankMission1(MoveTank):
         if not self.odometry_thread_run:
             raise ThreadNotRunning("odometry_start() must be called to track robot coordinates")
 
-        # stop moving
-        self.off(brake='hold')
-        
-        self._uts_motor.on_to_position(speed=speed,position=0)
+        self._uts_motor.on_to_position(speed=speed,position=5)
 
         x_delta = x_target_mm - self.x_pos_mm
         y_delta = y_target_mm - self.y_pos_mm
@@ -566,8 +626,38 @@ class MoveTankMission1(MoveTank):
         # rotate in place so we are pointed straight at our target
         angle_target_radians = math.atan2(y_delta, x_delta)
         angle_target_degrees = math.degrees(angle_target_radians)
-        self.turn_to_angle(speed, angle_target_degrees, brake=True, block=True)
-
+        if abs(angle_target_radians - self.theta) > math.radians(5):
+            # stop moving
+            self.off(brake='hold')
+            self.turn_to_angle(speed, angle_target_degrees, brake=True, block=True)
+            print("not in place")
         # drive in a straight line to the target coordinates
-        distance_mm = math.sqrt(pow(self.x_pos_mm - x_target_mm, 2) + pow(self.y_pos_mm - y_target_mm, 2))
-        self.on_for_distance(speed, distance_mm, brake, block)
+        self.on(speed,speed)
+
+    def run_mission_2(self, speed_lineal,speed_angular,safe_distance):
+            self.front_safe_distance = safe_distance
+            self._uts_motor.on_to_position(speed=speed_angular,position=5)
+            # stop moving
+            self.off(brake='hold')
+            while not self._touch_sensor.is_pressed:
+                if self.is_obstacle_detected:
+                    self.following_wall = True
+                    self.off(brake='hold')
+                    #mirar a los lados
+                    self._uts_motor.on_to_position(speed=speed_angular,position=95)
+                    see_right=self._ultrasonic_s.distance_centimeters
+                    self._uts_motor.on_to_position(speed=speed_angular,position=-85)
+                    see_left=self._ultrasonic_s.distance_centimeters
+                    #girar al lado +largo
+                    if see_right>see_left:
+                        self.turn_degrees(speed_angular,90,use_gyro=True)
+                    else:
+                        self.turn_degrees(speed_angular,-90,use_gyro=True)
+                    self._uts_motor.on_to_position(speed=speed_angular,position=5)
+                    self.is_obstacle_detected = False
+                    self.following_wall = False
+                else:
+                    #mover al frente
+                    print("Moving to forward")
+                    self.on(speed_lineal,speed_lineal)
+            self.off(brake='hold')

@@ -94,9 +94,16 @@ class EV3RobotDelegate(object):
         sys.exit()
 
     # Mision 1 del laboratorio
-    def move_to_goal(self, goal_x, goal_y, speed):
-        self.tank.run_mission(speed,goal_x, goal_y)
+    def move_to_goal(self, goal_x, goal_y, speed, safe_front_distance, distance_to_start_goal_line_precision, leave_point_to_hit_point_diff, dist_thresh_wf):
+        self.tank.run_mission(speed,goal_x, goal_y,safe_front_distance,distance_to_start_goal_line_precision,leave_point_to_hit_point_diff,dist_thresh_wf)
     
+    # Mision 2 del laboratorio
+    def run_mission_2(self, speed_lineal,speed_angular,safe_distance):
+        self.tank.run_mission_2(speed_lineal,speed_angular,safe_distance)
+
+    def turn_to_angle(self, speed, angle):
+        self.tank.turn_to_angle(speed,angle,use_gyro=True)
+
     def move_circle(self, radius_mm, distance_mm, speed):
         self.tank.on_arc_left(speed,radius_mm,distance_mm)
 

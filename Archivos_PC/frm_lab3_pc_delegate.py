@@ -60,10 +60,26 @@ class PCDelegate(object):
         #Envio de mensaje tipo "drive" y mensaje con lista de parametros
         mqtt_client.send_message(msgtype, msglist)
 
-    def move_to_goal(self, goal_x, goal_y, speed):
+    def move_to_goal(self, goal_x, goal_y, speed, safe_front_distance, distance_to_start_goal_line_precision, leave_point_to_hit_point_diff, dist_thresh_wf):
         #Declaración del tipo de mensaje y lista de parametros
         msgtype = "move_to_goal"
-        msglist = [goal_x, goal_y, speed]
+        msglist = [goal_x, goal_y, speed, safe_front_distance, distance_to_start_goal_line_precision, leave_point_to_hit_point_diff, dist_thresh_wf]
+        
+        #Envio de mensaje tipo "drive" y mensaje con lista de parametros
+        mqtt_client.send_message(msgtype, msglist)
+    
+    def run_mission_2(self, speed_lineal,speed_angular,safe_distance):
+        #Declaración del tipo de mensaje y lista de parametros
+        msgtype = "run_mission_2"
+        msglist = [speed_lineal, speed_angular, safe_distance]
+        
+        #Envio de mensaje tipo "drive" y mensaje con lista de parametros
+        mqtt_client.send_message(msgtype, msglist)
+
+    def turn_to_angle(self, speed, angle):
+        #Declaración del tipo de mensaje y lista de parametros
+        msgtype = "turn_to_angle"
+        msglist = [speed, angle]
         
         #Envio de mensaje tipo "drive" y mensaje con lista de parametros
         mqtt_client.send_message(msgtype, msglist)
@@ -99,8 +115,9 @@ if __name__ == '__main__':
 
 
     time.sleep(1)
-    delegate.move_to_goal(goal_x=600,goal_y=-600,speed=20)
-
+    #delegate.move_to_goal(goal_x=2500,goal_y=-1000,speed=10,safe_front_distance=18,distance_to_start_goal_line_precision=5,leave_point_to_hit_point_diff=60,dist_thresh_wf=2)
+    delegate.run_mission_2(speed_lineal=10,speed_angular=10,safe_distance=17)
+    #delegate.turn_to_angle(20,-45)
 
     #Cerrado del cliente MQTT
     mqtt_client.close()
