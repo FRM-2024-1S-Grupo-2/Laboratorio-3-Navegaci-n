@@ -137,7 +137,10 @@ Fin
 Se adjuntan dos vídeos demostrando la implementación de la mision 2. El primer vídeo muestra al robot navegando desde P1 hasta P2, superando el laberinto. Mientras que la idea  del segundo video es que pueda verificarse como va actuando el código:
 
 [!Ver video](https://youtu.be/c8UgCnnJz58?si=xPmGtbyE9bXLynKj)
-[!Ver video](https://youtu.be/l_cYp5f-If8?si=S12II0bMkwv5WBVw)
+
+
+[![Ver en YouTube](https://img.youtube.com/vi/Sqdyewv7rpY/maxresdefault.jpg)](https://www.youtube.com/watch?v=Sqdyewv7rpY)
+
 
 
 
