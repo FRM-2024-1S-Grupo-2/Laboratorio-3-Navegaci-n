@@ -67,7 +67,30 @@ El “maze algorithm” o algoritmo de laberinto es un conjunto de técnicas uti
 + Navegación: El robot sigue la ruta planificada, ajustándose según sea necesario si encuentra obstáculos no mapeados o cambios en el entorno.
 + Resolución de desafíos: Si el robot llega a un punto muerto o necesita reevaluar su ruta, puede utilizar estrategias como el algoritmo de la mano derecha, que implica seguir siempre la pared derecha hasta encontrar la salida.
 
+# Mision 1
+# Proyecto de Navegación con Algoritmo BUG2
 
+## Descripción del Proyecto
+
+Este proyecto tiene como objetivo implementar el algoritmo BUG2 para navegar desde una posición inicial P1 hasta una posición final P2 sorteando dos bostaculos como muestra la imagen. La misión 1 se enfoca en la navegación utilizando el algoritmo BUG2 para evitar obstáculos y alcanzar el destino deseado.
+
+![image](https://github.com/FRM-2024-1S-Grupo-2/Laboratorio-3-Navegacion/assets/82681128/27c29c6c-6a8e-4176-9ab0-f4dddd3e14d3)
+
+### Descripción de la Solución Seleccionada
+
+Para la misión 1, hemos seleccionado el algoritmo BUG2 debido a su capacidad para manejar la navegación en entornos con obstáculos. El algoritmo BUG2 sigue una estrategia donde el robot se mueve hacia el objetivo hasta que encuentra un obstáculo. En ese momento, el robot sigue el contorno del obstáculo hasta encontrar un punto donde pueda reanudar su movimiento directo hacia el objetivo.
+
+### Algoritmo BUG2 en Pseudocódigo
+
+```pseudo
+Inicio:
+    Inicializar posición P1 y posición objetivo P2
+    Mientras la posición actual != P2:
+        Si hay una línea de vista directa hacia P2:
+            Moverse en línea recta hacia P2
+        Sino:
+            Seguir el contorno del obstáculo hasta encontrar un punto que permita reanudar la línea recta hacia P2
+Fin
 
 
 
