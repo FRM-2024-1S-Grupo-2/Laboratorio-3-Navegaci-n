@@ -96,9 +96,10 @@ Fin
 ### Vídeo de la Implementación
 
 Se adjunta un vídeo demostrando la implementación del algoritmo BUG2 para la misión 1. El vídeo muestra al robot navegando desde P1 hasta P2, superando obstáculos en su camino.
-[!Ver video](https://youtu.be/dtWheftjFDU)
+[![Ver en YouTube](https://img.youtube.com/vi/dtWheftjFDU/maxresdefault.jpg)](https://www.youtube.com/watch?v=dtWheftjFDU)
 
-[!Ver video](https://youtu.be/NkHWqsUWm2k)
+[![Ver en YouTube](https://img.youtube.com/vi/NkHWqsUWm2k/maxresdefault.jpg)](https://www.youtube.com/watch?v=NkHWqsUWm2k)
+
 
 
 # Mision 2
