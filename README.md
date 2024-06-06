@@ -97,12 +97,17 @@ Fin
 
 Se adjunta un vídeo demostrando la implementación del algoritmo BUG2 para la misión 1. El vídeo muestra al robot navegando desde P1 hasta P2, superando obstáculos en su camino.
 
+
+
+
 # Mision 2
 # Proyecto de Navegación en Laberinto con Algoritmo MAZE
 
 ## Descripción del Proyecto
 
 Esta mision tiene como objetivo implementar un algoritmo de resolución de laberintos para navegar desde una entrada P1 hasta una salida P2. La misión 2 se enfoca en la navegación utilizando un algoritmo específico de MAZE que revisa ambos lados cuando detecta un obstáculo al frente y gira hacia el lado que tenga más espacio disponible.
+
+![image](https://github.com/FRM-2024-1S-Grupo-2/Laboratorio-3-Navegacion/assets/82681128/122662b5-a05c-4ff2-82c5-1d6d1dbe3067)
 
 ### Descripción de la Solución Seleccionada
 
