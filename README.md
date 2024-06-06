@@ -96,7 +96,7 @@ Fin
 ### Vídeo de la Implementación
 
 Se adjunta un vídeo demostrando la implementación del algoritmo BUG2 para la misión 1. El vídeo muestra al robot navegando desde P1 hasta P2, superando obstáculos en su camino.
-![Ver video](https://youtu.be/XaxZyw_Y8IU?si=eb1mvL-mJSvpH5u4)
+[!Ver video](https://youtu.be/XaxZyw_Y8IU?si=eb1mvL-mJSvpH5u4)
 
 
 
@@ -135,8 +135,8 @@ Fin
 
 Se adjuntan dos vídeos demostrando la implementación de la mision 2. El primer vídeo muestra al robot navegando desde P1 hasta P2, superando el laberinto. Mientras que la idea  del segundo video es que pueda verificarse como va actuando el código:
 
-![Ver video](https://youtu.be/c8UgCnnJz58?si=xPmGtbyE9bXLynKj)
-![Ver video](https://youtu.be/l_cYp5f-If8?si=S12II0bMkwv5WBVw)
+[!Ver video](https://youtu.be/c8UgCnnJz58?si=xPmGtbyE9bXLynKj)
+[!Ver video](https://youtu.be/l_cYp5f-If8?si=S12II0bMkwv5WBVw)
 
 
 
