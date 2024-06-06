@@ -67,6 +67,9 @@ El “maze algorithm” o algoritmo de laberinto es un conjunto de técnicas uti
 + Navegación: El robot sigue la ruta planificada, ajustándose según sea necesario si encuentra obstáculos no mapeados o cambios en el entorno.
 + Resolución de desafíos: Si el robot llega a un punto muerto o necesita reevaluar su ruta, puede utilizar estrategias como el algoritmo de la mano derecha, que implica seguir siempre la pared derecha hasta encontrar la salida.
 
+
+
+
 # Mision 1
 # Proyecto de Navegación con Algoritmo BUG2
 
