@@ -91,6 +91,41 @@ Inicio:
         Sino:
             Seguir el contorno del obstáculo hasta encontrar un punto que permita reanudar la línea recta hacia P2
 Fin
+```
 
+### Vídeo de la Implementación
 
+Se adjunta un vídeo demostrando la implementación del algoritmo BUG2 para la misión 1. El vídeo muestra al robot navegando desde P1 hasta P2, superando obstáculos en su camino.
+
+# Mision 2
+# Proyecto de Navegación en Laberinto con Algoritmo MAZE
+
+## Descripción del Proyecto
+
+Esta mision tiene como objetivo implementar un algoritmo de resolución de laberintos para navegar desde una entrada P1 hasta una salida P2. La misión 2 se enfoca en la navegación utilizando un algoritmo específico de MAZE que revisa ambos lados cuando detecta un obstáculo al frente y gira hacia el lado que tenga más espacio disponible.
+
+### Descripción de la Solución Seleccionada
+
+Para la misión 2, hemos seleccionado un algoritmo que detecta obstáculos y elige la dirección con más espacio disponible para continuar la navegación. Este enfoque es efectivo para encontrar caminos libres y evitar quedarse atrapado en callejones sin salida.
+
+### Algoritmo MAZE en Pseudocódigo
+
+```pseudo
+Inicio:
+    Inicializar posición P1 y posición objetivo P2
+    Mientras la posición actual != P2:
+        Si no hay obstáculo al frente:
+            Moverse hacia adelante
+        Sino:
+            Revisar espacio a la izquierda y a la derecha
+            Si el espacio a la izquierda > espacio a la derecha:
+                Girar a la izquierda
+            Sino:
+                Girar a la derecha
+Fin
+```
+
+### Vídeo de la Implementación
+
+Se adjunta un vídeo demostrando la implementación de la mision 2. El vídeo muestra al robot navegando desde P1 hasta P2, superando el laberinto.
 
