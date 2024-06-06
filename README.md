@@ -67,7 +67,7 @@ El “maze algorithm” o algoritmo de laberinto es un conjunto de técnicas uti
 + Navegación: El robot sigue la ruta planificada, ajustándose según sea necesario si encuentra obstáculos no mapeados o cambios en el entorno.
 + Resolución de desafíos: Si el robot llega a un punto muerto o necesita reevaluar su ruta, puede utilizar estrategias como el algoritmo de la mano derecha, que implica seguir siempre la pared derecha hasta encontrar la salida.
 
-
+![imagen](https://github.com/FRM-2024-1S-Grupo-2/Laboratorio-3-Navegacion/blob/main/Imagenes/Montaje.jpg)
 
 
 # Mision 1
@@ -139,7 +139,8 @@ Fin
 
 Se adjuntan dos vídeos demostrando la implementación de la mision 2. El primer vídeo muestra al robot navegando desde P1 hasta P2, superando el laberinto. Mientras que la idea  del segundo video es que pueda verificarse como va actuando el código:
 
-[!Ver video](https://youtu.be/c8UgCnnJz58?si=xPmGtbyE9bXLynKj)
+
+[![Ver en YouTube](https://img.youtube.com/vi/kXCW-OFXKEM/maxresdefault.jpg)](https://www.youtube.com/watch?v=kXCW-OFXKEM)
 
 
 [![Ver en YouTube](https://img.youtube.com/vi/Sqdyewv7rpY/maxresdefault.jpg)](https://www.youtube.com/watch?v=Sqdyewv7rpY)
